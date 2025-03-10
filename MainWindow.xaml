@@ -20,7 +20,7 @@
         <!-- menu bar -->
         <Menu Grid.Row="0">
             <MenuItem Header="_File">
-                <MenuItem Header="Exit" />
+                <MenuItem Header="Exit" Click="MenuItem_Click_Exit" />
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
@@ -28,18 +28,18 @@
                 <MenuItem Header="Paste" Command="ApplicationCommands.Paste" />
             </MenuItem>
             <MenuItem Header="_View">
-                <MenuItem Header="Side Panel" IsCheckable="True" IsChecked="True" />
+                <MenuItem Header="Side Panel" IsCheckable="True" IsChecked="True" Click="MenuItem_Click_ToggleSidePanel" />
                 <!--<MenuItem Header="Database Log" />-->
             </MenuItem>
             <MenuItem Header="_Data">
-                <MenuItem Header="Connect" />
-                <MenuItem Header="Connections" />
+                <MenuItem Header="Connect" Click="MenuItem_Click_Connect" />
+                <MenuItem Header="Connections" Click="MenuItem_Click_ShowConnectionsPanel" />
             </MenuItem>
             <MenuItem Header="_Tools">
-                <MenuItem Header="Import" />
+                <MenuItem Header="Import" Click="MenuItem_Click_ToggleImportTab" />
             </MenuItem>
             <MenuItem Header="_Help">
-                <MenuItem Header="About Northwind Traders" />
+                <MenuItem Header="About Northwind Traders" Click="MenuItem_Click_About" />
             </MenuItem>
         </Menu>
 
@@ -52,8 +52,8 @@
                 <Label Content="Database Connections" FontWeight="Normal" Padding="5" />
                 <ListBox x:Name="ConnectionsList" Height="300"/>
                 <!-- chose or new -->
-                <Button x:Name="ConnectButton" Content="Connect" Width="75" Height="20" Margin="5" />
-                <Button x:Name="EditButton" Content="Edit" Width="75" Height="20" Margin="5" />
+                <Button x:Name="ConnectButton" Content="Connect" Width="75" Height="20" Margin="5" Click="ConnectButton_Click_Connect" />
+                <Button x:Name="EditButton" Content="Edit" Width="75" Height="20" Margin="5" Click="EditButton_Click_EditConnection" />
             </StackPanel>
 
             <TabControl x:Name="MainTabControl" DockPanel.Dock="Right" >
@@ -71,10 +71,10 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <ComboBox x:Name="CategoryFilter" Grid.Row="0" Grid.ColumnSpan="2" Width="200" Margin="5" />
+                        <ComboBox x:Name="CategoryFilter" Grid.Row="0" Grid.ColumnSpan="2" Width="200" Margin="5" SelectionChanged="CategoryFilter_SelectionChanged" />
                         <Label Grid.Row="0" Grid.Column="3" Content="New Products can be added (Tools menu)" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Normal" Padding="5" />
                         
-                        <DataGrid x:Name="ProductsGrid" Grid.Row="1" Grid.ColumnSpan="3" AutoGenerateColumns="True" Margin="5"/>
+                        <DataGrid x:Name="ProductsGrid" Grid.Row="1" Grid.ColumnSpan="3" AutoGenerateColumns="True" Margin="5" SelectionChanged="ProductsGrid_SelectionChanged"/>
                     </Grid>
                 </TabItem>
 
@@ -87,11 +87,11 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
-                            <ComboBox x:Name="CustomerFilter" Width="200"/>
-                            <CheckBox x:Name="LastMonthFilter" Content="Orders for the last month" Margin="10,0,0,0"/>
+                            <ComboBox x:Name="CustomerFilter" Width="200" SelectionChanged="CustomerFilter_SelectionChanged"/>
+                            <CheckBox x:Name="LastMonthFilter" Content="Orders for the last month" Margin="10,0,0,0" Checked="LastMonthFilter_Checked"/>
                         </StackPanel>
 
-                        <DataGrid x:Name="OrdersGrid" Grid.Row="1" AutoGenerateColumns="True" Margin="5"/>
+                        <DataGrid x:Name="OrdersGrid" Grid.Row="1" AutoGenerateColumns="True" Margin="5" SelectionChanged="OrdersGrid_SelectionChanged"/>
                     </Grid>
                 </TabItem>
 
@@ -104,9 +104,9 @@
                         </Grid.RowDefinitions>
 
                         <!--Text="Input Country"-->
-                        <TextBox x:Name="CountryFilter" Grid.Row="0" Width="200" Margin="5" />
+                        <TextBox x:Name="CountryFilter" Grid.Row="0" Width="200" Margin="5" TextChanged="CountryFilter_TextChanged" />
 
-                        <DataGrid x:Name="CustomersGrid" Grid.Row="1" AutoGenerateColumns="True" Margin="5"/>
+                        <DataGrid x:Name="CustomersGrid" Grid.Row="1" AutoGenerateColumns="True" Margin="5" SelectionChanged="CustomersGrid_SelectionChanged"/>
                     </Grid>
                 </TabItem>
 

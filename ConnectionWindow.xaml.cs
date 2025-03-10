@@ -63,44 +63,63 @@ namespace csh_wpf_ado_pg_northwind_import
             }
         }
 
+        private void TestConnectionButton_Click_TestConnection(object sender, RoutedEventArgs e)
+        {
+            //
+            MessageBox.Show("Testing connection", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
-        // DRAFT
-        //private void BtnSave_Click(object sender, RoutedEventArgs e)
-        //{
-        //    string host = txtHost.Text.Trim();
-        //    string port = txtPort.Text.Trim();
-        //    string database = txtDatabase.Text.Trim();
-        //    string user = txtUser.Text.Trim();
-        //    string password = txtPassword.Password.Trim();
+            // check connection state Npgsql
+        }
 
-        //    if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(port) ||
-        //        string.IsNullOrEmpty(database) || string.IsNullOrEmpty(user) ||
-        //        string.IsNullOrEmpty(password))
-        //    {
-        //        MessageBox.Show("Fill all the feilds", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-        //        return;
-        //    }
+        private void SaveButton_Click_SaveConnection(object sender, RoutedEventArgs e)
+        {
+            //
+            MessageBox.Show("Saving connection", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
-        //    try
-        //    {
-        //        XDocument configXml = new XDocument(
-        //            new XElement("ConnectionSettings",
-        //                new XElement("Host", host),
-        //                new XElement("Port", port),
-        //                new XElement("Database", database),
-        //                new XElement("User", user),
-        //                new XElement("Password", password)
-        //            )
-        //        );
-        //        configXml.Save(dbConfigPath);
-        //        MessageBox.Show("Parameters saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-        //        this.Close();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Error saving parameters: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //    }
-        //}
+            // save connection settings to dbconfig.xml
+
+
+            // TO BE DONE
+
+            //    string host = txtHost.Text.Trim();
+            //    string port = txtPort.Text.Trim();
+            //    string database = txtDatabase.Text.Trim();
+            //    string user = txtUser.Text.Trim();
+            //    string password = txtPassword.Password.Trim();
+
+            //    if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(port) ||
+            //        string.IsNullOrEmpty(database) || string.IsNullOrEmpty(user) ||
+            //        string.IsNullOrEmpty(password))
+            //    {
+            //        MessageBox.Show("Fill all the feilds", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //        return;
+            //    }
+
+            //    try
+            //    {
+            //        XDocument configXml = new XDocument(
+            //            new XElement("ConnectionSettings",
+            //                new XElement("Host", host),
+            //                new XElement("Port", port),
+            //                new XElement("Database", database),
+            //                new XElement("User", user),
+            //                new XElement("Password", password)
+            //            )
+            //        );
+            //        configXml.Save(dbConfigPath);
+            //        MessageBox.Show("Parameters saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            //        this.Close();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show($"Error saving parameters: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    }
+        }
+
+        private void CancelButton_Click_Cancel(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
 
     }
 }

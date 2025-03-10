@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:csh_wpf_ado_pg_northwind_import"
         mc:Ignorable="d"
-        Title="NewOrderWindow" Height="300" Width="400"
+        Title="Northwind Traders - New Order" Height="300" Width="400"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -36,8 +36,8 @@
 
         <!-- buttons -->
         <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-            <Button x:Name="SaveButton" Content="Save" Width="80" Margin="5" />
-            <Button x:Name="CancelButton" Content="Cancel" Width="80" Margin="5" />
+            <Button x:Name="SaveButton" Content="Save" Width="80" Margin="5" Click="SaveButton_Click_SaveOrder" />
+            <Button x:Name="CancelButton" Content="Cancel" Width="80" Margin="5" Click="CancelButton_Click_Cancel" />
         </StackPanel>
         
     </Grid>

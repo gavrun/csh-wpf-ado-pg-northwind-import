@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:csh_wpf_ado_pg_northwind_import"
         mc:Ignorable="d"
-        Title="Northwind Traders - Database Connection" Height="300" Width="400"
+        Title="Northwind Traders - Database Connection" Height="320" Width="400"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -48,9 +48,9 @@
         <CheckBox x:Name="DefaultConnectionCheckBox" Grid.Row="7" Grid.Column="1" Content="Set as Default" Margin="5"/>
         <!-- buttons -->
         <StackPanel Grid.Row="8" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-            <Button x:Name="TestConnectionButton" Content="Test Connection" Width="120" Margin="5" />
-            <Button x:Name="SaveButton" Content="Save" Width="80" Margin="40,5,5,5" />
-            <Button x:Name="CancelButton" Content="Cancel" Width="80" Margin="5" />
+            <Button x:Name="TestConnectionButton" Content="Test Connection" Width="120" Margin="5" Click="TestConnectionButton_Click_TestConnection" />
+            <Button x:Name="SaveButton" Content="Save" Width="80" Margin="40,5,5,5" Click="SaveButton_Click_SaveConnection" />
+            <Button x:Name="CancelButton" Content="Cancel" Width="80" Margin="5" Click="CancelButton_Click_Cancel" />
         </StackPanel>
     </Grid>
 </Window>
