@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ConnectionSettings>
+	<Host>localhost</Host>
+	<Port>5432</Port>
+	<Database>northwind</Database>
+	<User>sa</User>
+	<Password>sa</Password>
+</ConnectionSettings>
