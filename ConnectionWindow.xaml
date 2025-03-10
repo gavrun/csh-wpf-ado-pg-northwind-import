@@ -5,8 +5,52 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:csh_wpf_ado_pg_northwind_import"
         mc:Ignorable="d"
-        Title="ConnectionWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Northwind Traders - Database Connection" Height="300" Width="400"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!-- connection item -->
+        <Label Grid.Row="0" Grid.Column="0" Content="Connection Name:" VerticalAlignment="Center"/>
+        <TextBox x:Name="ConnectionNameTextBox" Grid.Row="0" Grid.Column="1" Width="200" Margin="5"/>
+        <!-- connection parameters -->
+        <Label Grid.Row="1" Grid.Column="0" Content="Host:" VerticalAlignment="Center"/>
+        <TextBox x:Name="HostTextBox" Grid.Row="1" Grid.Column="1" Width="200" Margin="5"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="Port:" VerticalAlignment="Center"/>
+        <TextBox x:Name="PortTextBox" Grid.Row="2" Grid.Column="1" Width="200" Margin="5"/>
+        <Label Grid.Row="3" Grid.Column="0" Content="Database:" VerticalAlignment="Center"/>
+        <TextBox x:Name="DatabaseTextBox" Grid.Row="3" Grid.Column="1" Width="200" Margin="5"/>
+        <Label Grid.Row="4" Grid.Column="0" Content="User:" VerticalAlignment="Center"/>
+        <TextBox x:Name="UserTextBox" Grid.Row="4" Grid.Column="1" Width="200" Margin="5"/>
+        <Label Grid.Row="5" Grid.Column="0" Content="Password:" VerticalAlignment="Center"/>
+        <PasswordBox x:Name="PasswordBox" Grid.Row="5" Grid.Column="1" Width="200" Margin="5"/>
+        <!-- provider -->
+        <Label Grid.Row="6" Grid.Column="0" Content="Provider:" VerticalAlignment="Center"/>
+        <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" Margin="5">
+            <RadioButton x:Name="PostgreSQLRadioButton" Content="PostgreSQL (Npgsql)" IsChecked="True"/>
+            <RadioButton x:Name="MSSQLRadioButton" Content="MS SQL (SqlClient)" IsEnabled="False" Margin="10,0,0,0"/>
+        </StackPanel>
+        <!-- default -->
+        <CheckBox x:Name="DefaultConnectionCheckBox" Grid.Row="7" Grid.Column="1" Content="Set as Default" Margin="5"/>
+        <!-- buttons -->
+        <StackPanel Grid.Row="8" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+            <Button x:Name="TestConnectionButton" Content="Test Connection" Width="120" Margin="5" />
+            <Button x:Name="SaveButton" Content="Save" Width="80" Margin="40,5,5,5" />
+            <Button x:Name="CancelButton" Content="Cancel" Width="80" Margin="5" />
+        </StackPanel>
     </Grid>
 </Window>

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:csh_wpf_ado_pg_northwind_import"
         mc:Ignorable="d"
-        Title="Northwind Traders" Height="600" Width="1000"
+        Title="Northwind Traders - Products and Orders" Height="600" Width="1000"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
@@ -65,10 +65,16 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                        <ComboBox x:Name="CategoryFilter" Grid.Row="0" Width="200" Margin="5" />
-
-                        <DataGrid x:Name="ProductsGrid" Grid.Row="1" AutoGenerateColumns="True" Margin="5"/>
+                        <ComboBox x:Name="CategoryFilter" Grid.Row="0" Grid.ColumnSpan="2" Width="200" Margin="5" />
+                        <Label Grid.Row="0" Grid.Column="3" Content="New Products can be added (Tools menu)" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Normal" Padding="5" />
+                        
+                        <DataGrid x:Name="ProductsGrid" Grid.Row="1" Grid.ColumnSpan="3" AutoGenerateColumns="True" Margin="5"/>
                     </Grid>
                 </TabItem>
 
@@ -132,11 +138,11 @@
             </StatusBarItem>
             <StatusBarItem>
                 <!-- Text="Not connected" Text="Connected" -->
-                <TextBlock x:Name="ConnectionStatus" Text="Status: " />
+                <TextBlock x:Name="ConnectionStatus" Text="Status: TBD " />
             </StatusBarItem>
             <!-- database operations log popups -->
-            <StatusBarItem>
-                <TextBlock Text=" TBD " />
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock Text="Operation: [ TBD ]" />
             </StatusBarItem>
         </StatusBar>
 
