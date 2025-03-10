@@ -1,5 +1,7 @@
-﻿using Npgsql;
+﻿using Microsoft.Win32;
+using Npgsql;
 using System.Configuration;
+using System.Data;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -110,6 +112,26 @@ public partial class MainWindow : Window
         }
     }
 
+    // TBD ETL workflow
+    private void ProcessCsvFile(string filePath)
+    {
+        CsvDataProcessor processor = new CsvDataProcessor();
+
+        DataTable csvData = processor.ProcessCsv(filePath);
+
+        if (csvData.Rows.Count == 0)
+        {
+            MessageBox.Show("CSV file is empty or invalid.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        // TBD pass data to Import tab DataGrid
+        //ImportedDataGrid.ItemsSource = csvData.DefaultView;
+
+        MessageBox.Show($"CSV file loaded successfully. Rows: {csvData.Rows.Count}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    // event handlers
     private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
     {
         //close database connection 
@@ -254,6 +276,25 @@ public partial class MainWindow : Window
             MessageBox.Show($"Selected customer: {selectedCustomer}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
             // TBD open new window with customer details
+        }
+    }
+
+    private void Button_Click_OpenFile(object sender, RoutedEventArgs e)
+    {
+        OpenFileDialog openFileDialog = new OpenFileDialog 
+        {
+            Filter = "CSV Files (*.csv)|*.csv",
+            Title = "Select a CSV file"
+        };
+
+        if (openFileDialog.ShowDialog() == true)
+        {
+            string filePath = openFileDialog.FileName;
+
+            MessageBox.Show($"Selected file: {filePath}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // TBD read CSV file
+            //ProcessCsvFile(filePath);
         }
     }
 }

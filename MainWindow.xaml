@@ -120,7 +120,7 @@
 
                         <StackPanel Grid.Row="0" Orientation="Horizontal"  Margin="5">
                             <!-- re-upload CSV file in-place -->
-                            <Button Content="File" />
+                            <Button Content="Open File" Margin="5,0,0,0" Click="Button_Click_OpenFile" />
                             <Button Content="Import to database" Margin="5,0,0,0"/>
                         </StackPanel>
 

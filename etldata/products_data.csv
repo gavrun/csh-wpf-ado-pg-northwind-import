@@ -1,0 +1,21 @@
+product_id,product_name,supplier_id,category_id,quantity_per_unit,unit_price,units_in_stock,units_on_order,reorder_level,discontinued
+1,Uncle Bob's Organic Dried Pears,7,3,24 - 250 g pkgs.,24.83,64,0,7,1
+2,Pavlova,2,4,10 boxes x 30 bags,48.3,17,19,17,1
+3,Konbu,10,2,24 - 250 g pkgs.,8.99,36,2,17,1
+4,Ikura,10,2,10 boxes x 30 bags,47.6,58,19,5,1
+5,Chang,6,3,10 boxes x 30 bags,25.52,36,11,9,1
+6,Tofu,10,4,48 - 6 oz jars,9.2,61,0,15,0
+7,Pavlova,4,1,10 boxes x 30 bags,36.21,89,8,10,0
+8,Sir Rodney's Marmalade,2,4,24 - 250 g pkgs.,23.24,31,7,17,1
+9,Grandma's Boysenberry Spread,3,2,48 - 6 oz jars,39.43,99,18,15,1
+10,Queso Manchego La Pastora,8,1,24 - 250 g pkgs.,21.27,63,3,12,1
+11,Queso Cabrales,9,3,12 - 550 ml bottles,29.41,25,6,5,0
+12,Chang,4,4,48 - 6 oz jars,15.76,62,4,20,1
+13,Queso Manchego La Pastora,10,2,10 boxes x 30 bags,29.06,77,9,6,0
+14,Alice Mutton,1,1,12 - 550 ml bottles,45.49,2,8,9,1
+15,Tofu,8,2,24 - 250 g pkgs.,10.09,77,10,6,0
+16,Mishi Kobe Niku,1,2,24 - 250 g pkgs.,27.78,1,10,13,0
+17,Teatime Chocolate Biscuits,4,1,12 - 550 ml bottles,22.63,78,1,12,1
+18,Northwoods Cranberry Sauce,6,4,24 - 250 g pkgs.,9.05,35,18,19,0
+19,Aniseed Syrup,10,2,24 - 250 g pkgs.,25.5,44,6,9,1
+20,Chang,2,1,12 - 8 oz jars,41.8,75,4,18,1
