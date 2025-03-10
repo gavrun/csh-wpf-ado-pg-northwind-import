@@ -47,7 +47,7 @@
         <!-- default -->
         <CheckBox x:Name="DefaultConnectionCheckBox" Grid.Row="7" Grid.Column="1" Content="Set as Default" Margin="5"/>
         <!-- buttons -->
-        <StackPanel Grid.Row="8" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+        <StackPanel Grid.Row="8" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
             <Button x:Name="TestConnectionButton" Content="Test Connection" Width="120" Margin="5" />
             <Button x:Name="SaveButton" Content="Save" Width="80" Margin="40,5,5,5" />
             <Button x:Name="CancelButton" Content="Cancel" Width="80" Margin="5" />
