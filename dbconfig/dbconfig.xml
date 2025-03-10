@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ConnectionSettings>
+	<ConnectionName>TBD</ConnectionName>
 	<Host>localhost</Host>
 	<Port>5432</Port>
 	<Database>northwind</Database>
