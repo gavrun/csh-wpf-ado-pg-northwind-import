@@ -5,8 +5,140 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:csh_wpf_ado_pg_northwind_import"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Northwind Traders" Height="600" Width="1000"
+        WindowStartupLocation="CenterScreen">
     <Grid>
+        <Grid.RowDefinitions>
+            <!-- menu -->
+            <RowDefinition Height="Auto"/>
+            <!-- tabs with data -->
+            <RowDefinition Height="*"/>
+            <!-- bar -->
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- menu bar -->
+        <Menu Grid.Row="0">
+            <MenuItem Header="_File">
+                <MenuItem Header="Exit" />
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
+                <MenuItem Header="Cut" Command="ApplicationCommands.Cut" />
+                <MenuItem Header="Paste" Command="ApplicationCommands.Paste" />
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="Side Panel" IsCheckable="True" IsChecked="True" />
+                <!--<MenuItem Header="Database Log" />-->
+            </MenuItem>
+            <MenuItem Header="_Data">
+                <MenuItem Header="Connect" />
+                <MenuItem Header="Connections" />
+            </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="Import" />
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="About Northwind Traders" />
+            </MenuItem>
+        </Menu>
+
+        <!-- main dock tabs datagrid -->
+
+        <DockPanel Grid.Row="1">
+
+            <!-- left panel -->
+            <StackPanel x:Name="SidePanel" DockPanel.Dock="Left" Width="200" Visibility="Visible" Background="#EEE">
+                <Label Content="Database Connections" FontWeight="Normal" Padding="5" />
+                <ListBox x:Name="ConnectionsList" Height="300"/>
+                <!-- chose or new -->
+                <Button x:Name="ConnectButton" Content="Connect" Width="75" Height="20" Margin="5" />
+                <Button x:Name="EditButton" Content="Edit" Width="75" Height="20" Margin="5" />
+            </StackPanel>
+
+            <TabControl x:Name="MainTabControl" DockPanel.Dock="Right" >
+                <!-- tab products -->
+                <TabItem Header="Products">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!-- filters datagrid -->
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <ComboBox x:Name="CategoryFilter" Grid.Row="0" Width="200" Margin="5" />
+
+                        <DataGrid x:Name="ProductsGrid" Grid.Row="1" AutoGenerateColumns="True" Margin="5"/>
+                    </Grid>
+                </TabItem>
+
+                <!-- tab orders -->
+                <TabItem Header="Orders">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+                            <ComboBox x:Name="CustomerFilter" Width="200"/>
+                            <CheckBox x:Name="LastMonthFilter" Content="Orders for the last month" Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <DataGrid x:Name="OrdersGrid" Grid.Row="1" AutoGenerateColumns="True" Margin="5"/>
+                    </Grid>
+                </TabItem>
+
+                <!-- tab customers -->
+                <TabItem Header="Customers">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!--Text="Input Country"-->
+                        <TextBox x:Name="CountryFilter" Grid.Row="0" Width="200" Margin="5" />
+
+                        <DataGrid x:Name="CustomersGrid" Grid.Row="1" AutoGenerateColumns="True" Margin="5"/>
+                    </Grid>
+                </TabItem>
+
+                <!-- tab data import -->
+                <TabItem x:Name="ImportTab" Header="Data Import" Visibility="Collapsed">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal"  Margin="5">
+                            <!-- re-upload CSV file in-place -->
+                            <Button Content="File" />
+                            <Button Content="Import to database" Margin="5,0,0,0"/>
+                        </StackPanel>
+
+                        <DataGrid x:Name="ImportedDataGrid" Grid.Row="1" AutoGenerateColumns="True" Margin="5"/>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+
+        <!-- status bar -->
+        <StatusBar Grid.Row="2">
+            <!-- connection name status -->
+            <StatusBarItem>
+                <TextBlock Text="Database connection: " />
+            </StatusBarItem>
+            <StatusBarItem>
+                <!-- Text="Not connected" Text="Connected" -->
+                <TextBlock x:Name="ConnectionStatus" Text="Status: " />
+            </StatusBarItem>
+            <!-- database operations log popups -->
+            <StatusBarItem>
+                <TextBlock Text=" TBD " />
+            </StatusBarItem>
+        </StatusBar>
 
     </Grid>
 </Window>

@@ -66,13 +66,13 @@ public partial class MainWindow : Window
 
                 XElement root = configXml.Element("ConnectionSettings");
 
-                string server = root.Element("Host")?.Value;
+                string host = root.Element("Host")?.Value;
                 string port = root.Element("Port")?.Value;
                 string database = root.Element("Database")?.Value;
                 string user = root.Element("User")?.Value;
                 string password = root.Element("Password")?.Value;
 
-                string connString = $"Server={server};Port={port};User Id={user};Password={password};Database={database};";
+                string connString = $"Server={host};Port={port};User Id={user};Password={password};Database={database};";
 
                 MessageBox.Show("Connections loaded", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
