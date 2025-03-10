@@ -58,6 +58,9 @@ public partial class MainWindow : Window
 
                 XElement root = configXml.Element("ConnectionSettings");
 
+                string connName = root.Element("ConnectionName")?.Value;
+                bool isDefault = bool.TryParse(root.Element("DefaultConnectionCheckBox")?.Value, out bool result);
+
                 string host = root.Element("Host")?.Value;
                 string port = root.Element("Port")?.Value;
                 string database = root.Element("Database")?.Value;
@@ -80,14 +83,16 @@ public partial class MainWindow : Window
         }
     }
 
-    // save dbconfig.xml when closing
-    private void SaveConnectionSettings(string host, string port, string database, string user, string password)
+    // TBD save dbconfig.xml when App closing
+    private void SaveConnectionSettings(string connName, bool isDefault, string host, string port, string database, string user, string password)
     {
         try
         {
             XDocument configXml = new XDocument(
 
                 new XElement("ConnectionSettings",
+                    new XElement("ConnectionName", connName),
+                    new XElement("DefaultConnectionCheckBox", isDefault),
                     new XElement("Host", host),
                     new XElement("Port", port),
                     new XElement("Database", database),
@@ -99,9 +104,8 @@ public partial class MainWindow : Window
 
             MessageBox.Show("Connections saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-
             throw;
         }
     }
@@ -120,9 +124,9 @@ public partial class MainWindow : Window
         SidePanel.Visibility = (SidePanel.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
     }
 
-    private void MenuItem_Click_Connect(object sender, RoutedEventArgs e)
+    private void MenuItem_Click_NewConnection(object sender, RoutedEventArgs e)
     {
-        ConnectionWindow connectionWindow = new ConnectionWindow();
+        ConnectionWindow connectionWindow = new ConnectionWindow(false);
         connectionWindow.ShowDialog();
     }
 
@@ -164,7 +168,7 @@ public partial class MainWindow : Window
 
     private void EditButton_Click_EditConnection(object sender, RoutedEventArgs e)
     {
-        ConnectionWindow connectionWindow = new ConnectionWindow();
+        ConnectionWindow connectionWindow = new ConnectionWindow(true);
         connectionWindow.ShowDialog();
     }
 

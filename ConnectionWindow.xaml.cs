@@ -24,12 +24,21 @@ namespace csh_wpf_ado_pg_northwind_import
         //
         private string dbConfigPath = "dbconfig.xml";
 
+        private bool isEditMode;
+
         // ctor
-        public ConnectionWindow()
+        public ConnectionWindow(bool isEdit = false)
         {
             InitializeComponent();
+            isEditMode = isEdit;
 
-            LoadExistingSettings();
+            if (isEditMode)
+            {
+                // default before load existing
+                // XAML ISSUE Text="localhost" > FallbackValue="localhost" > HostTextBox.Text = "localhost"
+
+                LoadExistingSettings();
+            }
         }
 
         //
@@ -43,17 +52,22 @@ namespace csh_wpf_ado_pg_northwind_import
 
                     XElement root = configXml.Element("ConnectionSettings");
 
+                    string connName = root.Element("ConnectionName")?.Value;
+                    bool isDefault = bool.TryParse(root.Element("DefaultConnectionCheckBox")?.Value, out bool result);
+
                     string host = root.Element("Host")?.Value;
                     string port = root.Element("Port")?.Value;
                     string database = root.Element("Database")?.Value;
                     string user = root.Element("User")?.Value;
                     string password = root.Element("Password")?.Value;
 
-                    //txtHost.Text = host;
-                    //txtPort.Text = port;
-                    //txtDatabase.Text = database;
-                    //txtUser.Text = user;
-                    //txtPassword.Text = password;
+                    ConnectionNameTextBox.Text = connName;
+                    HostTextBox.Text = host;
+                    PortTextBox.Text = port;
+                    DatabaseTextBox.Text = database;
+                    UserTextBox.Text = user;
+
+                    PasswordBox.Password = password;
                     
                 }
             }
@@ -61,6 +75,19 @@ namespace csh_wpf_ado_pg_northwind_import
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private bool Validate(TextBox textBox)
+        {
+            //textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource(); ISSUE with UpdateSource()
+
+            BindingExpression binding = textBox.GetBindingExpression(TextBox.TextProperty);
+            if (binding != null)
+            {
+                binding.UpdateSource();
+            }
+
+            return !Validation.GetHasError(textBox);
         }
 
         private void TestConnectionButton_Click_TestConnection(object sender, RoutedEventArgs e)
@@ -73,47 +100,56 @@ namespace csh_wpf_ado_pg_northwind_import
 
         private void SaveButton_Click_SaveConnection(object sender, RoutedEventArgs e)
         {
+            // save connection settings to dbconfig.xml
+
+            string connName = ConnectionNameTextBox.Text.Trim();
+            bool isDefault = DefaultConnectionCheckBox.IsChecked ?? false;
+
+            string host = HostTextBox.Text.Trim();
+            string port = PortTextBox.Text.Trim();
+            string database = DatabaseTextBox.Text.Trim();
+            string user = UserTextBox.Text.Trim();
+
+            string password = PasswordBox.Password.Trim();
+
+            if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(port) || string.IsNullOrEmpty(database) || string.IsNullOrEmpty(user) || string.IsNullOrEmpty(password))
+            {
+                MessageBox.Show("Fill all the fields", "Info", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // ISSUE overflow Validate()
+            //if (!Validate(HostTextBox) || !Validate(PortTextBox))
+            //{
+            //    MessageBox.Show("Correct errors before saving", "Info", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //    return;
+            //}
+
             //
             MessageBox.Show("Saving connection", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            // save connection settings to dbconfig.xml
+            try
+            {
+                XDocument configXml = new XDocument(
+                    new XElement("ConnectionSettings",
+                        new XElement("ConnectionName", connName),
+                        new XElement("DefaultConnectionCheckBox", isDefault),
+                        new XElement("Host", host),
+                        new XElement("Port", port),
+                        new XElement("Database", database),
+                        new XElement("User", user),
+                        new XElement("Password", password)
+                    )
+                );
+                configXml.Save(dbConfigPath);
 
-
-            // TO BE DONE
-
-            //    string host = txtHost.Text.Trim();
-            //    string port = txtPort.Text.Trim();
-            //    string database = txtDatabase.Text.Trim();
-            //    string user = txtUser.Text.Trim();
-            //    string password = txtPassword.Password.Trim();
-
-            //    if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(port) ||
-            //        string.IsNullOrEmpty(database) || string.IsNullOrEmpty(user) ||
-            //        string.IsNullOrEmpty(password))
-            //    {
-            //        MessageBox.Show("Fill all the feilds", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //        return;
-            //    }
-
-            //    try
-            //    {
-            //        XDocument configXml = new XDocument(
-            //            new XElement("ConnectionSettings",
-            //                new XElement("Host", host),
-            //                new XElement("Port", port),
-            //                new XElement("Database", database),
-            //                new XElement("User", user),
-            //                new XElement("Password", password)
-            //            )
-            //        );
-            //        configXml.Save(dbConfigPath);
-            //        MessageBox.Show("Parameters saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            //        this.Close();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show($"Error saving parameters: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    }
+                MessageBox.Show("Parameters saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving parameters: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void CancelButton_Click_Cancel(object sender, RoutedEventArgs e)

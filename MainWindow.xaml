@@ -32,7 +32,7 @@
                 <!--<MenuItem Header="Database Log" />-->
             </MenuItem>
             <MenuItem Header="_Data">
-                <MenuItem Header="Connect" Click="MenuItem_Click_Connect" />
+                <MenuItem Header="New Connection" Click="MenuItem_Click_NewConnection" />
                 <MenuItem Header="Connections" Click="MenuItem_Click_ShowConnectionsPanel" />
             </MenuItem>
             <MenuItem Header="_Tools">
