@@ -26,13 +26,17 @@ namespace csh_wpf_ado_pg_northwind_import
 
         private bool isEditMode;
 
+        private ConnectionItem selectedConnection;
+
         // ctor
-        public ConnectionWindow(bool isEdit = false)
+        public ConnectionWindow(bool isEdit = false, ConnectionItem connection = null)
         {
             InitializeComponent();
             isEditMode = isEdit;
 
-            if (isEditMode)
+            selectedConnection = connection;
+
+            if (isEditMode && selectedConnection != null)
             {
                 // default before load existing
                 // XAML ISSUE Text="localhost" > FallbackValue="localhost" > HostTextBox.Text = "localhost"
@@ -46,30 +50,25 @@ namespace csh_wpf_ado_pg_northwind_import
         {
             try
             {
-                if (File.Exists(dbConfigPath))
+                ConnectionNameTextBox.Text = selectedConnection.ConnectionName;
+
+                if (selectedConnection.Provider == "Npgsql")
                 {
-                    XDocument configXml = XDocument.Load(dbConfigPath);
-
-                    XElement root = configXml.Element("ConnectionSettings");
-
-                    string connName = root.Element("ConnectionName")?.Value;
-                    bool isDefault = bool.TryParse(root.Element("DefaultConnectionCheckBox")?.Value, out bool result);
-
-                    string host = root.Element("Host")?.Value;
-                    string port = root.Element("Port")?.Value;
-                    string database = root.Element("Database")?.Value;
-                    string user = root.Element("User")?.Value;
-                    string password = root.Element("Password")?.Value;
-
-                    ConnectionNameTextBox.Text = connName;
-                    HostTextBox.Text = host;
-                    PortTextBox.Text = port;
-                    DatabaseTextBox.Text = database;
-                    UserTextBox.Text = user;
-
-                    PasswordBox.Password = password;
-                    
+                    PostgreSQLRadioButton.IsChecked = true; //default
                 }
+                //else if (selectedConnection.Provider == "SqlClient")
+                //{
+                //    MSSQLRadioButton.IsChecked = true;
+                //}
+
+                DefaultConnectionCheckBox.IsChecked = selectedConnection.IsDefault;
+
+                HostTextBox.Text = selectedConnection.Host;
+                PortTextBox.Text = selectedConnection.Port;
+                DatabaseTextBox.Text = selectedConnection.Database;
+                UserTextBox.Text = selectedConnection.User;
+
+                PasswordBox.Password = selectedConnection.Password;
             }
             catch (Exception ex)
             {
@@ -103,6 +102,9 @@ namespace csh_wpf_ado_pg_northwind_import
             // save connection settings to dbconfig.xml
 
             string connName = ConnectionNameTextBox.Text.Trim();
+
+            string provider = PostgreSQLRadioButton.IsChecked == true ? "Npgsql" : "SqlClient"; //MSSQL not implemented
+
             bool isDefault = DefaultConnectionCheckBox.IsChecked ?? false;
 
             string host = HostTextBox.Text.Trim();
@@ -112,12 +114,12 @@ namespace csh_wpf_ado_pg_northwind_import
 
             string password = PasswordBox.Password.Trim();
 
-            if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(port) || string.IsNullOrEmpty(database) || string.IsNullOrEmpty(user) || string.IsNullOrEmpty(password))
+            // validate fields
+            if (string.IsNullOrEmpty(connName) || string.IsNullOrEmpty(host) || string.IsNullOrEmpty(port) || string.IsNullOrEmpty(database) || string.IsNullOrEmpty(user) || string.IsNullOrEmpty(password))
             {
                 MessageBox.Show("Fill all the fields", "Info", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-
             // ISSUE overflow Validate()
             //if (!Validate(HostTextBox) || !Validate(PortTextBox))
             //{
@@ -125,23 +127,64 @@ namespace csh_wpf_ado_pg_northwind_import
             //    return;
             //}
 
-            //
             MessageBox.Show("Saving connection", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
             try
             {
-                XDocument configXml = new XDocument(
-                    new XElement("ConnectionSettings",
-                        new XElement("ConnectionName", connName),
-                        new XElement("DefaultConnectionCheckBox", isDefault),
-                        new XElement("Host", host),
-                        new XElement("Port", port),
-                        new XElement("Database", database),
-                        new XElement("User", user),
-                        new XElement("Password", password)
-                    )
-                );
+                XDocument configXml = File.Exists(dbConfigPath) ? XDocument.Load(dbConfigPath) : new XDocument(new XElement("ConnectionSettings"));
+
+                XElement root = configXml.Element("ConnectionSettings");
+
+                // override default connection
+                if (isDefault)
+                {
+                    foreach (XElement conn in root.Elements("Connection"))
+                    {
+                        conn.Element("DefaultConnectionCheckBox").Value = "false";
+                    }
+                }
+
+                if (isEditMode && selectedConnection != null)
+                {
+                    XElement existingConnection = root
+                        .Elements("Connection")
+                        .FirstOrDefault(c => 
+                            c.Element("ConnectionName")?.Value == selectedConnection.ConnectionName);
+                    if (existingConnection != null) 
+                    {
+                        existingConnection.Element("ConnectionName").Value = connName;
+                        existingConnection.Element("Provider").Value = provider;
+                        existingConnection.Element("DefaultConnectionCheckBox").Value = isDefault.ToString();
+                        existingConnection.Element("Host").Value = host;
+                        existingConnection.Element("Port").Value = port;
+                        existingConnection.Element("Database").Value = database;
+                        existingConnection.Element("User").Value = user;
+                        existingConnection.Element("Password").Value = password;
+                    }
+                }
+                else
+                {
+                    // new connection
+                    XElement newConnection = new XElement("Connection",
+                            new XElement("ConnectionName", connName),
+                            new XElement("Provider", provider),
+                            new XElement("DefaultConnectionCheckBox", isDefault),
+                            new XElement("Host", host),
+                            new XElement("Port", port),
+                            new XElement("Database", database),
+                            new XElement("User", user),
+                            new XElement("Password", password)
+                        );
+                    root.Add(newConnection);
+                }
+
                 configXml.Save(dbConfigPath);
+
+                // refresh connection list
+                if (Application.Current.MainWindow is MainWindow mainWindow)
+                {
+                    mainWindow.LoadConnectionSettings();
+                }
 
                 MessageBox.Show("Parameters saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 this.Close();

@@ -50,7 +50,16 @@
             <!-- left panel -->
             <StackPanel x:Name="SidePanel" DockPanel.Dock="Left" Width="200" Visibility="Visible" Background="#EEE">
                 <Label Content="Database Connections" FontWeight="Normal" Padding="5" />
-                <ListBox x:Name="ConnectionsList" Height="300"/>
+                <ListBox x:Name="ConnectionsList" Height="300" >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding ConnectionName}" FontWeight="Bold" />
+                                <TextBlock Text="{Binding Provider}" FontSize="12" Foreground="Gray" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
                 <!-- chose or new -->
                 <Button x:Name="ConnectButton" Content="Connect" Width="75" Height="20" Margin="5" Click="ConnectButton_Click_Connect" />
                 <Button x:Name="EditButton" Content="Edit" Width="75" Height="20" Margin="5" Click="EditButton_Click_EditConnection" />

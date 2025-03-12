@@ -17,6 +17,8 @@ public partial class MainWindow : Window
     //
     private string dbConfigPath = "dbconfig.xml";
 
+    private ConnectionItem defaultConnection;
+
 
     // ctor
     public MainWindow()
@@ -25,6 +27,7 @@ public partial class MainWindow : Window
 
         //TestDatabaseConnection();
         LoadConnectionSettings();
+
     }
 
     // DEBUG
@@ -50,26 +53,51 @@ public partial class MainWindow : Window
     }
 
     // read dbconfig.xml when starting 
-    private void LoadConnectionSettings()
+    public void LoadConnectionSettings()
     {
         if (File.Exists(dbConfigPath))
         {
             try
             {
+                // load connections from xml
                 XDocument configXml = XDocument.Load(dbConfigPath);
 
                 XElement root = configXml.Element("ConnectionSettings");
 
-                string connName = root.Element("ConnectionName")?.Value;
-                bool isDefault = bool.TryParse(root.Element("DefaultConnectionCheckBox")?.Value, out bool result);
+                //List<Dictionary<string, string>> connections = new List<Dictionary<string, string>>();
+                List<ConnectionItem> connections = new List<ConnectionItem>();
 
-                string host = root.Element("Host")?.Value;
-                string port = root.Element("Port")?.Value;
-                string database = root.Element("Database")?.Value;
-                string user = root.Element("User")?.Value;
-                string password = root.Element("Password")?.Value;
+                ConnectionsList.ItemsSource = null;
 
-                string connString = $"Server={host};Port={port};User Id={user};Password={password};Database={database};";
+                foreach (XElement conn in root.Elements("Connection"))
+                {
+                    connections.Add(new ConnectionItem
+                    {
+                        ConnectionName = conn.Element("ConnectionName")?.Value,
+                        Provider = conn.Element("Provider")?.Value,
+                        IsDefault = bool.TryParse(conn.Element("DefaultConnectionCheckBox")?.Value, out bool result) && result,
+                        Host = conn.Element("Host")?.Value,
+                        Port = conn.Element("Port")?.Value,
+                        Database = conn.Element("Database")?.Value,
+                        User = conn.Element("User")?.Value,
+                        Password = conn.Element("Password")?.Value
+                    });
+                }
+                //string connString = $"Server={host};Port={port};User Id={user};Password={password};Database={database};";
+
+                // pass connections to UI
+                ConnectionsList.ItemsSource = connections;
+                //ConnectionsList.DisplayMemberPath = "ConnectionName";
+
+                // connect to default connection FORBIDDEN to avoid reconnecting on list refresh
+
+                // ConnectionItem defaultConnection = connections.FirstOrDefault(c => c.IsDefault);
+                //if (defaultConnection != null)
+                //{
+                //    MessageBox.Show("Connections loaded", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                //}
+
+                defaultConnection = connections.FirstOrDefault(c => c.IsDefault);
 
                 MessageBox.Show("Connections loaded", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -86,30 +114,9 @@ public partial class MainWindow : Window
     }
 
     // TBD save dbconfig.xml when App closing
-    private void SaveConnectionSettings(string connName, bool isDefault, string host, string port, string database, string user, string password)
+    private void SaveConnectionSettings()
     {
-        try
-        {
-            XDocument configXml = new XDocument(
-
-                new XElement("ConnectionSettings",
-                    new XElement("ConnectionName", connName),
-                    new XElement("DefaultConnectionCheckBox", isDefault),
-                    new XElement("Host", host),
-                    new XElement("Port", port),
-                    new XElement("Database", database),
-                    new XElement("User", user),
-                    new XElement("Password", password)
-                )
-            );
-            configXml.Save(dbConfigPath);
-
-            MessageBox.Show("Connections saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        
     }
 
     // TBD ETL workflow
@@ -178,20 +185,33 @@ public partial class MainWindow : Window
     {
         if (ConnectionsList.SelectedItem != null)
         {
-            string selectedConnection = ConnectionsList.SelectedItem.ToString();
-
+            // DEBUG
+            string selectedConnection = ConnectionsList.SelectedItem.GetType().GetProperty("ConnectionName").GetValue(ConnectionsList.SelectedItem).ToString();
             MessageBox.Show($"Connecting to {selectedConnection}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         else
         {
-            MessageBox.Show("Select connection", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            //MessageBox.Show("Select connection", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            if (defaultConnection != null)
+            {
+                string conn = defaultConnection.ConnectionName.ToString();
+                MessageBox.Show($"Connecting to {conn}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
     }
 
     private void EditButton_Click_EditConnection(object sender, RoutedEventArgs e)
     {
-        ConnectionWindow connectionWindow = new ConnectionWindow(true);
-        connectionWindow.ShowDialog();
+        if (ConnectionsList.SelectedItem is ConnectionItem selectedConnection)
+        {
+            ConnectionWindow connectionWindow = new ConnectionWindow(true, selectedConnection);
+            connectionWindow.ShowDialog();
+        }
+        else
+        {
+            MessageBox.Show("Select connection", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     private void CategoryFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
