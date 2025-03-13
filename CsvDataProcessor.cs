@@ -83,6 +83,8 @@ namespace csh_wpf_ado_pg_northwind_import
             {
                 string firstLine = reader.ReadLine();
 
+                //return firstLine.Contains(";") ? ';' : ',';
+
                 if (firstLine.Contains(";")) 
                     return ';';
 

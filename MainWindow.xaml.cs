@@ -294,7 +294,7 @@ public partial class MainWindow : Window
         SqlPopup.VerticalOffset = mainWindow.ActualHeight - 75;
 
         SqlPopup.IsOpen = true;
-        await Task.Delay(1000); // show 1 sec
+        await Task.Delay(3000); // show 3 sec
         SqlPopup.IsOpen = false;
     }
 
@@ -304,7 +304,18 @@ public partial class MainWindow : Window
     {
         CsvDataProcessor processor = new CsvDataProcessor();
 
-        DataTable csvData = processor.ProcessCsv(filePath);
+        DataTable csvData;
+
+        try
+        {
+            csvData = processor.ProcessCsv(filePath);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error loading CSV: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            //throw;
+            return;
+        }
 
         if (csvData.Rows.Count == 0)
         {
@@ -312,11 +323,94 @@ public partial class MainWindow : Window
             return;
         }
 
-        // TBD pass data to Import tab DataGrid
-        //ImportedDataGrid.ItemsSource = csvData.DefaultView;
+        if (!ValidateCsvData(csvData))
+        {
+            MessageBox.Show("CSV file contains invalid values", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
 
-        MessageBox.Show($"CSV file loaded successfully. Rows: {csvData.Rows.Count}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        // DEBUG
+        //MessageBox.Show($"CSV file loaded successfully. Rows: {csvData.Rows.Count}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        // TBD pass data to Import tab DataGrid
+
+        ImportedDataGrid.ItemsSource = csvData.DefaultView;
+        MessageBox.Show($"CSV loaded. Rows: {csvData.Rows.Count}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
     }
+
+    private bool ValidateCsvData(DataTable csvData)
+    {
+        foreach (DataRow row in csvData.Rows)
+        {
+            foreach (var item in row.ItemArray)
+            {
+                if (item == null || string.IsNullOrWhiteSpace(item.ToString()))
+                {
+                    return false; // empty value
+                }
+                    
+            }
+        }
+        return true;
+    }
+
+    private void ImportCsvToDatabase()
+    {
+        if (ImportedDataGrid.ItemsSource == null)
+        {
+            MessageBox.Show("No data to import.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        DataTable dataTable = ((DataView)ImportedDataGrid.ItemsSource).ToTable();
+
+        using (var transaction = App.ActiveConnection.BeginTransaction())
+        {
+            try
+            {
+                // read column names to snake_case collection
+                var columns = ImportedDataGrid.Columns.Select(col => col.Header.ToString().Replace(" ", "_").ToLower()).ToList();
+                if (columns.Count == 0) { return; }
+
+                // create temp table "temp_etl" in current session ISSUE
+                // drop table if exists
+                string dropTableQuery = "DROP TABLE IF EXISTS temp_etl;";
+                QueryHelper.ExecuteNonQuery(dropTableQuery);
+
+                // create persistent table "temp_etl" in current session
+                string createTableQuery = $@"
+                CREATE TABLE temp_etl (
+                    {string.Join(", ", columns.Select(c => $"{c} TEXT"))}
+                );";
+                QueryHelper.ExecuteNonQuery(createTableQuery);
+
+                // insert data into temp table
+                string insertTableQuery = $@"
+                INSERT INTO temp_etl ({string.Join(", ", columns)}) 
+                VALUES ({string.Join(", ", columns.Select(c => $"@{c}"))});";
+
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    var parameters = new Dictionary<string, object>();
+                    foreach (var column in columns)
+                    {
+                        parameters[$"@{column}"] = row[column] ?? DBNull.Value;
+                    }
+                    QueryHelper.ExecuteNonQuery(insertTableQuery, parameters);
+                }
+
+                // transform data DBA "transform_temp_etl()"
+
+                transaction.Commit();
+                MessageBox.Show("Import completed.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                MessageBox.Show($"Import failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
 
     // event handlers
     private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
@@ -522,7 +616,7 @@ public partial class MainWindow : Window
             MessageBox.Show($"Selected file: {filePath}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
             // TBD read CSV file
-            //ProcessCsvFile(filePath);
+            ProcessCsvFile(filePath);
         }
     }
 
@@ -607,5 +701,10 @@ public partial class MainWindow : Window
     {
         NewOrderWindow newOrderWindow = new NewOrderWindow();
         newOrderWindow.ShowDialog();
+    }
+
+    private void Button_Click_ImportToDb(object sender, RoutedEventArgs e)
+    {
+        ImportCsvToDatabase();
     }
 }
