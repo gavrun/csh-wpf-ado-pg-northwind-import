@@ -27,7 +27,9 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        //TestDatabaseConnection();
+        // DEBUG
+        //App.TestDatabaseConnection();
+
         LoadConnectionSettings();
 
         ConnectToDefault();
@@ -36,29 +38,7 @@ public partial class MainWindow : Window
         //LoadOrders(); 
         //LoadCustomers();
     }
-
-    // DEBUG
-    private void TestDatabaseConnection()
-    {
-        //string connString = "Server=localhost;Port=5432;User Id=sa;Password=sa;Database=northwind;"; 
-
-        string connString = ConfigurationManager.ConnectionStrings["TestPostgreSqlConnection"].ConnectionString;
-
-        try
-        {
-            using (var conn = new NpgsqlConnection(connString))
-            {
-                conn.Open();
-                MessageBox.Show("Connection successful", "Connection test", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message, "Connection test", MessageBoxButton.OK, MessageBoxImage.Error);
-            //throw;
-        }
-    }
-
+    
     // read dbconfig.xml when starting 
     public void LoadConnectionSettings()
     {
@@ -120,7 +100,6 @@ public partial class MainWindow : Window
             //MessageBox.Show($"Connecting to {conn}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
             // connect to default connection
-
             ConnectToDatabase(defaultConnectionItem);
         }
     }
@@ -128,23 +107,16 @@ public partial class MainWindow : Window
     private void ConnectToDatabase(ConnectionItem selectedConnection)
     {
         // close active connections explicitly
-        if (activeConnection != null && (activeConnection.State == ConnectionState.Open || activeConnection.State == ConnectionState.Connecting))
-        {
-            activeConnection.Close();
-            activeConnection.Dispose();
-            //activeConnection = null;
-        }
-
-        NpgsqlConnection.ClearAllPools();
 
         // new connection
         string connString = selectedConnection.GetConnectionString();
 
+        var connection = new NpgsqlConnection(connString);
+
         try
         {
-            activeConnection = new NpgsqlConnection(connString);
-
-            activeConnection.Open();
+            connection.Open();
+            App.SetActiveConnection(connection);
 
             // DEBUG
             string conn = selectedConnection.ConnectionName.ToString();
@@ -161,13 +133,6 @@ public partial class MainWindow : Window
             MessageBox.Show($"Error connecting to selected connection: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             //throw;
         }
-    }
-
-
-    // TBD save dbconfig.xml when App closing
-    private void SaveConnectionSettings()
-    {
-        
     }
 
     // TBD ETL workflow
@@ -224,12 +189,10 @@ public partial class MainWindow : Window
 
     private void MenuItem_Click_ToggleImportTab(object sender, RoutedEventArgs e)
     {
-        //ImportTab.Visibility = (ImportTab.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
-        
         //force open
         ImportTab.Visibility = Visibility.Visible;
 
-        //hide after button upload to database is clicked
+        //hide after button upload to database is clicked and successful sql query is executed
     }
 
     private void MenuItem_Click_About(object sender, RoutedEventArgs e)

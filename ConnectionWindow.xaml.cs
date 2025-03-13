@@ -17,9 +17,6 @@ using System.Xml.Linq;
 
 namespace csh_wpf_ado_pg_northwind_import
 {
-    /// <summary>
-    /// Interaction logic for ConnectionWindow.xaml
-    /// </summary>
     public partial class ConnectionWindow : Window
     {
         //
