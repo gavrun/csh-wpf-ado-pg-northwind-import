@@ -17,7 +17,9 @@ public partial class MainWindow : Window
     //
     private string dbConfigPath = "dbconfig.xml";
 
-    private ConnectionItem defaultConnection;
+    private ConnectionItem defaultConnectionItem;
+
+    private NpgsqlConnection activeConnection;
 
 
     // ctor
@@ -91,17 +93,8 @@ public partial class MainWindow : Window
 
                 // pass connections to UI
                 ConnectionsList.ItemsSource = connections;
-                //ConnectionsList.DisplayMemberPath = "ConnectionName";
 
-                // connect to default connection FORBIDDEN to avoid reconnecting on list refresh
-
-                // ConnectionItem defaultConnection = connections.FirstOrDefault(c => c.IsDefault);
-                //if (defaultConnection != null)
-                //{
-                //    MessageBox.Show("Connections loaded", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                //}
-
-                defaultConnection = connections.FirstOrDefault(c => c.IsDefault);
+                defaultConnectionItem = connections.FirstOrDefault(c => c.IsDefault);
 
                 // DEBUG
                 //MessageBox.Show("Connections loaded", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -120,30 +113,56 @@ public partial class MainWindow : Window
 
     private void ConnectToDefault()
     {
-        if (defaultConnection != null)
+        if (defaultConnectionItem != null)
         {
             // DEBUG
-            //string conn = defaultConnection.ConnectionName.ToString();
+            //string conn = defaultConnectionItem.ConnectionName.ToString();
             //MessageBox.Show($"Connecting to {conn}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
             // connect to default connection
 
-            string connString = defaultConnection.GetConnectionString();
-
-            try
-            {
-                using (var conn = new NpgsqlConnection(connString))
-                {
-                    conn.Open();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error connecting to default connection: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                //throw;
-            }
+            ConnectToDatabase(defaultConnectionItem);
         }
     }
+
+    private void ConnectToDatabase(ConnectionItem selectedConnection)
+    {
+        // close active connections explicitly
+        if (activeConnection != null && (activeConnection.State == ConnectionState.Open || activeConnection.State == ConnectionState.Connecting))
+        {
+            activeConnection.Close();
+            activeConnection.Dispose();
+            //activeConnection = null;
+        }
+
+        NpgsqlConnection.ClearAllPools();
+
+        // new connection
+        string connString = selectedConnection.GetConnectionString();
+
+        try
+        {
+            activeConnection = new NpgsqlConnection(connString);
+
+            activeConnection.Open();
+
+            // DEBUG
+            string conn = selectedConnection.ConnectionName.ToString();
+            MessageBox.Show($"Connecting to {conn}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // push status to UI
+            //ConnectionStatus.Text = $"Status: Connected to {selectedConnection.ConnectionName}";
+
+            // push data to UI
+            // TBD
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error connecting to selected connection: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            //throw;
+        }
+    }
+
 
     // TBD save dbconfig.xml when App closing
     private void SaveConnectionSettings()
@@ -224,18 +243,27 @@ public partial class MainWindow : Window
         if (ConnectionsList.SelectedItem != null)
         {
             // DEBUG
-            string selectedConnection = ConnectionsList.SelectedItem.GetType().GetProperty("ConnectionName").GetValue(ConnectionsList.SelectedItem).ToString();
-            MessageBox.Show($"Connecting to {selectedConnection}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            //string selectedConnection = ConnectionsList.SelectedItem.GetType().GetProperty("ConnectionName").GetValue(ConnectionsList.SelectedItem).ToString();
+            //MessageBox.Show($"Connecting to {selectedConnection}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            if (ConnectionsList.SelectedItem is ConnectionItem selectedConnection)
+            {
+                ConnectToDatabase(selectedConnection);
+            }
         }
         else
         {
             // DEBUG
             //MessageBox.Show("Select connection", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-            if (defaultConnection != null)
+            if (defaultConnectionItem != null)
             {
-                string conn = defaultConnection.ConnectionName.ToString();
-                MessageBox.Show($"Connecting to {conn}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                string conn = defaultConnectionItem.ConnectionName.ToString();
+                MessageBox.Show($"Connecting to default {conn}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Select connection", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }
