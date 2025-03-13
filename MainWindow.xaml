@@ -164,11 +164,18 @@
                 <!-- Text="Not connected" Text="Connected" -->
                 <TextBlock x:Name="ConnectionStatus" Text="Status: Not Connected" />
             </StatusBarItem>
-            <!-- database operations log popups -->
-            <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock Text="Operation: [ TBD ]" />
+            <!-- database operations -->
+            <StatusBarItem HorizontalAlignment="Right" Margin="0,0,10,0">
+                <TextBlock Text="Operation: [ executed SQL query literal appears here ]" />
             </StatusBarItem>
         </StatusBar>
+
+        <!-- popup toast Placement="Absolute" -->
+        <Popup x:Name="SqlPopup" Placement="Relative" StaysOpen="False" AllowsTransparency="True" PlacementTarget="{Binding ElementName=MainWindow}">
+            <Border Background="Chocolate" CornerRadius="5" Padding="10" Opacity="0.6">
+                <TextBlock x:Name="SqlPopupText" Foreground="White" FontSize="12" />
+            </Border>
+        </Popup>
 
     </Grid>
 </Window>

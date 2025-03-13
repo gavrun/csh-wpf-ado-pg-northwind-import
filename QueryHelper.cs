@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Npgsql;
 
 namespace csh_wpf_ado_pg_northwind_import
@@ -14,6 +15,8 @@ namespace csh_wpf_ado_pg_northwind_import
         // for SELECT query 
         public static List<T> ExecuteQuery<T>(string query, Func<NpgsqlDataReader, T> mapFunction, Dictionary<string, object>? parameters = null)
         {
+            Application.Current.Dispatcher.Invoke(() => ((MainWindow)Application.Current.MainWindow).ShowSqlNotification(query));
+
             List<T> results = new List<T>();
 
             using (var cmd = new NpgsqlCommand(query, App.ActiveConnection))
@@ -56,6 +59,8 @@ namespace csh_wpf_ado_pg_northwind_import
         // for INSERT, UPDATE or DELETE
         public static int ExecuteNonQuery(string query, Dictionary<string, object>? parameters = null)
         {
+            Application.Current.Dispatcher.Invoke(() => ((MainWindow)Application.Current.MainWindow).ShowSqlNotification(query));
+
             using (var cmd = new NpgsqlCommand(query, App.ActiveConnection))
             {
                 if (parameters != null)

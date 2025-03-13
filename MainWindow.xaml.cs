@@ -275,6 +275,29 @@ public partial class MainWindow : Window
         CustomersGrid.ItemsSource = customers;
     }
 
+    public async void ShowSqlNotification(string sqlQuery)
+    {
+        SqlPopupText.Text = sqlQuery;
+
+        var mainWindow = Application.Current.MainWindow as MainWindow;
+        if (mainWindow == null) return;
+        await Task.Delay(500); // pause
+
+        // <Popup> Placement="RelativePoint"
+        //double windowBottom = mainWindow.Top + mainWindow.ActualHeight;
+        //double windowRight = mainWindow.Left + mainWindow.ActualWidth;
+        //SqlPopup.HorizontalOffset = windowRight - 1;
+        //SqlPopup.VerticalOffset = windowBottom - 1;
+
+        // <Popup> Placement="Relative"
+        SqlPopup.HorizontalOffset = mainWindow.ActualWidth - 450;
+        SqlPopup.VerticalOffset = mainWindow.ActualHeight - 75;
+
+        SqlPopup.IsOpen = true;
+        await Task.Delay(1000); // show 1 sec
+        SqlPopup.IsOpen = false;
+    }
+
 
     // TBD ETL workflow
     private void ProcessCsvFile(string filePath)
