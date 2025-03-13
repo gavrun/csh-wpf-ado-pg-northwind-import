@@ -101,8 +101,8 @@ namespace csh_wpf_ado_pg_northwind_import
                                 $"Port={PortTextBox.Text.Trim()};" +
                                 $"Database={DatabaseTextBox.Text.Trim()};" +
                                 $"Username={UserTextBox.Text.Trim()};" +
-                                $"Password={PasswordBox.Password.Trim()};" +
-                                $"Pooling=true;";
+                                $"Password={PasswordBox.Password.Trim()}" +
+                                $"Timeout=5;";
 
             try
             {

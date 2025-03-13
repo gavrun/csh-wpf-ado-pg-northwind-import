@@ -28,7 +28,7 @@
                 <MenuItem Header="Paste" Command="ApplicationCommands.Paste" />
             </MenuItem>
             <MenuItem Header="_View">
-                <MenuItem Header="Side Panel" IsCheckable="True" IsChecked="True" Click="MenuItem_Click_ToggleSidePanel" />
+                <MenuItem x:Name="MenuItemSidePanel" Header="Side Panel" IsCheckable="True" IsChecked="True" Click="MenuItem_Click_ToggleSidePanel" />
                 <!--<MenuItem Header="Database Log" />-->
             </MenuItem>
             <MenuItem Header="_Data">

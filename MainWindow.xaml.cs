@@ -29,6 +29,10 @@ public partial class MainWindow : Window
         LoadConnectionSettings();
 
         ConnectToDefault();
+
+        //LoadProducts();
+        //LoadOrders(); 
+        //LoadCustomers();
     }
 
     // DEBUG
@@ -100,7 +104,7 @@ public partial class MainWindow : Window
                 defaultConnection = connections.FirstOrDefault(c => c.IsDefault);
 
                 // DEBUG
-                MessageBox.Show("Connections loaded", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                //MessageBox.Show("Connections loaded", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -119,10 +123,25 @@ public partial class MainWindow : Window
         if (defaultConnection != null)
         {
             // DEBUG
-            string conn = defaultConnection.ConnectionName.ToString();
-            MessageBox.Show($"Connecting to {conn}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            //string conn = defaultConnection.ConnectionName.ToString();
+            //MessageBox.Show($"Connecting to {conn}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            // TBD connect to default connection
+            // connect to default connection
+
+            string connString = defaultConnection.GetConnectionString();
+
+            try
+            {
+                using (var conn = new NpgsqlConnection(connString))
+                {
+                    conn.Open();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error connecting to default connection: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //throw;
+            }
         }
     }
 
@@ -175,8 +194,13 @@ public partial class MainWindow : Window
 
     private void MenuItem_Click_ShowConnectionsPanel(object sender, RoutedEventArgs e)
     {
-        // force open
-        SidePanel.Visibility = Visibility.Visible;
+        // force open ISSUE check mark
+        
+        if (SidePanel.Visibility == Visibility.Collapsed)
+        {
+            SidePanel.Visibility = Visibility.Visible;
+            MenuItemSidePanel.IsChecked = true;
+        }
     }
 
     private void MenuItem_Click_ToggleImportTab(object sender, RoutedEventArgs e)
