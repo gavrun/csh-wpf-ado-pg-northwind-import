@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:csh_wpf_ado_pg_northwind_import"
         mc:Ignorable="d"
-        Title="Northwind Traders - New Order" Height="300" Width="400"
-        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Northwind Traders - New Order" 
+        Height="300" Width="400" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -22,12 +22,12 @@
         </Grid.ColumnDefinitions>
 
         <!-- client -->
-        <Label Grid.Row="0" Grid.Column="0" Content="Client:" VerticalAlignment="Center"/>
-        <TextBox x:Name="ClientTextBox" Grid.Row="0" Grid.Column="1" Width="200" Margin="5"/>
+        <Label Grid.Row="0" Grid.Column="0" Content="Customer:" VerticalAlignment="Center"/>
+        <ComboBox x:Name="CustomerComboBox" Grid.Row="0" Grid.Column="1" Width="200" Margin="5"/>
 
         <!-- product order details -->
         <Label Grid.Row="1" Grid.Column="0" Content="Product:" VerticalAlignment="Center"/>
-        <TextBox x:Name="ProductTextBox" Grid.Row="1" Grid.Column="1" Width="200" Margin="5"/>
+        <ComboBox x:Name="ProductComboBox" Grid.Row="1" Grid.Column="1" Width="200" Margin="5"/>
         <Label Grid.Row="2" Grid.Column="0" Content="Quantity:" VerticalAlignment="Center"/>
         <TextBox x:Name="QuantityTextBox" Grid.Row="2" Grid.Column="1" Width="200" Margin="5"/>
         <Label Grid.Row="3" Grid.Column="0" Content="Order Date:" VerticalAlignment="Center"/>

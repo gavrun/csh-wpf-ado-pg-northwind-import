@@ -32,6 +32,9 @@ public partial class MainWindow : Window
 
         LoadConnectionSettings();
 
+        App.ConnectionStatusChanged += status => ConnectionStatus.Text = status;
+        App.UpdateConnectionStatus();
+
         ConnectToDefault();
 
         LoadCategories();
@@ -138,6 +141,7 @@ public partial class MainWindow : Window
             //throw;
         }
     }
+
 
     // TBD DB workflow
 
@@ -574,5 +578,11 @@ public partial class MainWindow : Window
     {
         CountryFilter.Text = "";
         LoadCustomers(); // TEMP ignore filter box DONE
+    }
+
+    private void Button_Click_NewOrder(object sender, RoutedEventArgs e)
+    {
+        NewOrderWindow newOrderWindow = new NewOrderWindow();
+        newOrderWindow.ShowDialog();
     }
 }

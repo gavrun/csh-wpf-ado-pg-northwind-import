@@ -14,6 +14,8 @@ public partial class App : Application
     // allow not having active connection
     public static NpgsqlConnection? ActiveConnection { get; private set; }
 
+    public static event Action<string> ConnectionStatusChanged;
+
 
     // DEBUG initial test
     public static void TestDatabaseConnection()
@@ -50,6 +52,20 @@ public partial class App : Application
         NpgsqlConnection.ClearAllPools();
 
         ActiveConnection = connection;
+
+        UpdateConnectionStatus();
+    }
+
+    public static void UpdateConnectionStatus()
+    {
+        string status = "Not connected";
+
+        if (ActiveConnection != null && (ActiveConnection.State == ConnectionState.Open || ActiveConnection.State == ConnectionState.Connecting))
+        {
+            status = $"Connected to: \"{ActiveConnection.Database}\"";
+        }
+
+        ConnectionStatusChanged?.Invoke(status);
     }
 
     // TBD test periodically if active connection is available

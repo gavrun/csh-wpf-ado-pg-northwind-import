@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:csh_wpf_ado_pg_northwind_import"
         mc:Ignorable="d"
-        Title="Northwind Traders - Database Connection" Height="320" Width="400"
-        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Northwind Traders - Database Connection" 
+        Height="320" Width="400" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

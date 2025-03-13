@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:csh_wpf_ado_pg_northwind_import"
         mc:Ignorable="d"
-        Title="Northwind Traders - Products and Orders" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen">
+        Title="Northwind Traders - Products and Orders" 
+        Height="600" Width="1000" MinHeight="600" MinWidth="1000" WindowStartupLocation="CenterScreen">
+    <!--ResizeMode="NoResize"-->
     <Grid>
         <Grid.RowDefinitions>
             <!-- menu -->
@@ -88,7 +89,7 @@
 
                         <Label Grid.Column="3" Content="New Products can be added (Tools menu)" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Normal" />
 
-                        <DataGrid x:Name="ProductsGrid" Grid.Row="1" Grid.ColumnSpan="5" AutoGenerateColumns="True" Margin="5,0,5,0" SelectionChanged="ProductsGrid_SelectionChanged"/>
+                        <DataGrid x:Name="ProductsGrid" Grid.Row="1" Grid.ColumnSpan="5" AutoGenerateColumns="True" Margin="5" SelectionChanged="ProductsGrid_SelectionChanged"/>
                     </Grid>
                 </TabItem>
 
@@ -104,6 +105,8 @@
                             <ComboBox x:Name="CustomerFilter" Width="200" Margin="10,0,0,0" SelectionChanged="CustomerFilter_SelectionChanged"/>
                             <CheckBox x:Name="LastMonthFilter" Content="Orders for the last month" VerticalAlignment="Center" Margin="10,0,0,0" Checked="LastMonthFilter_Checked"/>
                             <Button Content="Refresh" Width="75" Height="20" Margin="30,0,0,0" Click="Button_Click_RefreshOrders" />
+
+                            <Button Content="Add New Order" Width="95" Height="20" Margin="50,0,0,0" Click="Button_Click_NewOrder"  />
                         </StackPanel>
 
 
@@ -122,7 +125,7 @@
                         <!--Text="Input Country"-->
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
                             <Label Content="Filter by country:" VerticalAlignment="Center" FontWeight="Normal" Margin="10,0,0,0" />
-                            <TextBox x:Name="CountryFilter" Width="200" Margin="10,0,0,0" TextChanged="CountryFilter_TextChanged" />
+                            <TextBox x:Name="CountryFilter" Width="200" Height="20" Margin="10,0,0,0" TextChanged="CountryFilter_TextChanged" />
                             <Button x:Name="ButtonApplyFilter" Content="Apply" Width="75" Height="20" Margin="10,0,0,0" Click="ButtonApplyFilter_Click_Apply" />
                             <Button Content="Refresh" Width="75" Height="20" Margin="40,0,0,0" Click="Button_Click_RefreshCustomers" />
                         </StackPanel>
@@ -159,7 +162,7 @@
             </StatusBarItem>
             <StatusBarItem>
                 <!-- Text="Not connected" Text="Connected" -->
-                <TextBlock x:Name="ConnectionStatus" Text="Status: TBD " />
+                <TextBlock x:Name="ConnectionStatus" Text="Status: Not Connected" />
             </StatusBarItem>
             <!-- database operations log popups -->
             <StatusBarItem HorizontalAlignment="Right">
