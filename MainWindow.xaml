@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:csh_wpf_ado_pg_northwind_import"
         mc:Ignorable="d"
         Title="Northwind Traders - Products and Orders" 
-        Height="600" Width="1000" MinHeight="600" MinWidth="1000" WindowStartupLocation="CenterScreen">
+        Height="500" Width="900" MinHeight="600" MinWidth="800" WindowStartupLocation="CenterScreen">
     <!--ResizeMode="NoResize"-->
     <Grid>
         <Grid.RowDefinitions>
@@ -51,7 +51,7 @@
             <!-- left panel -->
             <StackPanel x:Name="SidePanel" DockPanel.Dock="Left" Width="200" Visibility="Visible" Background="#EEE">
                 <Label Content="Database Connections" FontWeight="Normal" Padding="5" />
-                <ListBox x:Name="ConnectionsList" Height="350" >
+                <ListBox x:Name="ConnectionsList" Height="300" >
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -154,25 +154,44 @@
             </TabControl>
         </DockPanel>
 
+        <!-- popup cusomer details Placement="Relative" -->
+        <Popup x:Name="CustomerPopup" Placement="Mouse" StaysOpen="False" AllowsTransparency="True" PlacementTarget="{Binding ElementName=OrdersGrid}">
+            <Border Background="White" CornerRadius="5" Padding="10" BorderBrush="Gray" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock x:Name="PopupCompanyName" FontWeight="Bold" FontSize="14"/>
+                    <TextBlock x:Name="PopupContactName"/>
+                    <TextBlock x:Name="PopupContactTitle" FontStyle="Italic"/>
+                    <TextBlock x:Name="PopupAddress"/>
+                    <TextBlock x:Name="PopupLocation"/>
+                    <TextBlock x:Name="PopupPhone"/>
+                </StackPanel>
+            </Border>
+        </Popup>
+        
         <!-- status bar -->
         <StatusBar Grid.Row="2">
             <!-- connection name status -->
             <StatusBarItem>
-                <TextBlock Text="Database connection: " />
+                <TextBlock Text="Database connection: " Margin="10,0,0,0"/>
             </StatusBarItem>
             <StatusBarItem>
                 <!-- Text="Not connected" Text="Connected" -->
-                <TextBlock x:Name="ConnectionStatus" Text="Status: Not Connected" />
+                <TextBlock x:Name="ConnectionStatus" Text="Not Connected" />
             </StatusBarItem>
+            
+            <StatusBarItem>
+                <CheckBox x:Name="DebugModeCheckBox" Content="Debug Mode" Margin="10,0,0,0"/>
+            </StatusBarItem>
+            
             <!-- database operations -->
             <StatusBarItem HorizontalAlignment="Right" Margin="0,0,10,0">
-                <TextBlock Text="Operation: [ executed SQL query literal appears here ]" />
+                <TextBlock Text="Operation: [ executed SQL query literals appear somewhere here ]" />
             </StatusBarItem>
         </StatusBar>
 
         <!-- popup toast Placement="Absolute" -->
         <Popup x:Name="SqlPopup" Placement="Relative" StaysOpen="False" AllowsTransparency="True" PlacementTarget="{Binding ElementName=MainWindow}">
-            <Border Background="Chocolate" CornerRadius="5" Padding="10" Opacity="0.6">
+            <Border Background="Chocolate" CornerRadius="5" Padding="10" Opacity="0.7">
                 <TextBlock x:Name="SqlPopupText" Foreground="White" FontSize="12" />
             </Border>
         </Popup>

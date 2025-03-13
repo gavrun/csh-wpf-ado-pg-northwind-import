@@ -21,6 +21,8 @@ public partial class MainWindow : Window
 
     private NpgsqlConnection activeConnection;
 
+    private bool IsDebugMode => DebugModeCheckBox.IsChecked == true;
+
 
     // ctor
     public MainWindow()
@@ -85,6 +87,7 @@ public partial class MainWindow : Window
 
                 // DEBUG
                 //MessageBox.Show("Connections loaded", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                DebugLog($"Connections loaded");
             }
             catch (Exception ex)
             {
@@ -103,8 +106,9 @@ public partial class MainWindow : Window
         if (defaultConnectionItem != null)
         {
             // DEBUG
-            //string conn = defaultConnectionItem.ConnectionName.ToString();
+            string conn = defaultConnectionItem.ConnectionName.ToString();
             //MessageBox.Show($"Connecting to {conn}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            DebugLog($"Connecting to {conn}");
 
             // connect to default connection
             ConnectToDatabase(defaultConnectionItem);
@@ -126,8 +130,9 @@ public partial class MainWindow : Window
             App.SetActiveConnection(connection);
 
             // DEBUG
-            //string conn = selectedConnection.ConnectionName.ToString();
+            string conn = selectedConnection.ConnectionName.ToString();
             //MessageBox.Show($"Connecting to {conn}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            DebugLog($"Connecting to {conn}");
 
             // push status to UI
             //ConnectionStatus.Text = $"Status: Connected to {selectedConnection.ConnectionName}";
@@ -283,12 +288,6 @@ public partial class MainWindow : Window
         if (mainWindow == null) return;
         await Task.Delay(500); // pause
 
-        // <Popup> Placement="RelativePoint"
-        //double windowBottom = mainWindow.Top + mainWindow.ActualHeight;
-        //double windowRight = mainWindow.Left + mainWindow.ActualWidth;
-        //SqlPopup.HorizontalOffset = windowRight - 1;
-        //SqlPopup.VerticalOffset = windowBottom - 1;
-
         // <Popup> Placement="Relative"
         SqlPopup.HorizontalOffset = mainWindow.ActualWidth - 450;
         SqlPopup.VerticalOffset = mainWindow.ActualHeight - 75;
@@ -331,8 +330,9 @@ public partial class MainWindow : Window
 
         // DEBUG
         //MessageBox.Show($"CSV file loaded successfully. Rows: {csvData.Rows.Count}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-        // TBD pass data to Import tab DataGrid
-
+        DebugLog($"CSV file loaded successfully. Rows: {csvData.Rows.Count}");
+        
+        // pass data to Import tab DataGrid
         ImportedDataGrid.ItemsSource = csvData.DefaultView;
         MessageBox.Show($"CSV loaded. Rows: {csvData.Rows.Count}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
     }
@@ -464,8 +464,9 @@ public partial class MainWindow : Window
         if (ConnectionsList.SelectedItem != null)
         {
             // DEBUG
-            //string selectedConnection = ConnectionsList.SelectedItem.GetType().GetProperty("ConnectionName").GetValue(ConnectionsList.SelectedItem).ToString();
-            //MessageBox.Show($"Connecting to {selectedConnection}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            string selectedConnectionD = ConnectionsList.SelectedItem.GetType().GetProperty("ConnectionName").GetValue(ConnectionsList.SelectedItem).ToString();
+            //MessageBox.Show($"Connecting to {selectedConnectionD}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            DebugLog($"Connecting to {selectedConnectionD}");
 
             if (ConnectionsList.SelectedItem is ConnectionItem selectedConnection)
             {
@@ -476,6 +477,7 @@ public partial class MainWindow : Window
         {
             // DEBUG
             //MessageBox.Show("Select connection", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
 
             if (defaultConnectionItem != null)
             {
@@ -507,8 +509,9 @@ public partial class MainWindow : Window
         if (CategoryFilter.SelectedItem != null)
         {
             // DEBUG
-            //string selectedCategory = CategoryFilter.SelectedItem.ToString();
-            //MessageBox.Show($"Filtering by {selectedCategory}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            string selectedCategoryD = CategoryFilter.SelectedItem.ToString();
+            //MessageBox.Show($"Filtering by {selectedCategoryD}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            DebugLog($"Filtering by {selectedCategoryD}");
 
             // load data from database
             // SQL query: SELECT * FROM Products WHERE Category = selectedCategory
@@ -525,9 +528,10 @@ public partial class MainWindow : Window
     {
         if (CategoryFilter.SelectedItem != null)
         {
+            // DEBUG
             string selectedCategory = CategoryFilter.SelectedItem.ToString();
-
-            MessageBox.Show($"Filtering by {selectedCategory}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show($"Filtering by {selectedCategory}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            DebugLog($"Filtering by {selectedCategory}");
 
             // load data from database
             // SQL query: SELECT * FROM Products WHERE Category = selectedCategory
@@ -541,6 +545,7 @@ public partial class MainWindow : Window
             string selectedCustomer = CustomerFilter.SelectedItem.ToString();
             // DEBUG
             //MessageBox.Show($"Filtering by {selectedCustomer}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            DebugLog($"Filtering by {selectedCustomer}");
 
             // load data from database
             // SQL query: SELECT * FROM Orders WHERE Customer = selectedCustomer
@@ -557,7 +562,9 @@ public partial class MainWindow : Window
 
     private void LastMonthFilter_Checked(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Filtering by last month", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        // DEBUG
+        //MessageBox.Show("Filtering by last month", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        DebugLog($"Filtering by last month");
 
         // load data from database
         // SQL query: SELECT * FROM Orders WHERE OrderDate >= DATEADD(month, -1, GETDATE())
@@ -569,14 +576,12 @@ public partial class MainWindow : Window
 
     private void OrdersGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        // TBD
         if (OrdersGrid.SelectedItem != null)
         {
+            // DEBUG
             var selectedOrder = OrdersGrid.SelectedItem;
-
-            MessageBox.Show($"Selected order: {selectedOrder}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-
-            // TBD open new window with order details
+            //MessageBox.Show($"Selected order: {selectedOrder}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            DebugLog($"Selected order: {selectedOrder}");
         }
     }
 
@@ -590,14 +595,22 @@ public partial class MainWindow : Window
 
     private void CustomersGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        // TBD
+        // DEBUG
+        //MessageBox.Show($"SelectedItem Type: {CustomersGrid.SelectedItem.GetType().FullName}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+
         if (CustomersGrid.SelectedItem != null)
         {
             var selectedCustomer = CustomersGrid.SelectedItem;
+            //MessageBox.Show($"Selected customer: {selectedCustomer}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            DebugLog($"Selected customer: {selectedCustomer}");
+        }
 
-            MessageBox.Show($"Selected customer: {selectedCustomer}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        // TBD open customer details
 
-            // TBD open new window with customer details
+        if (CustomersGrid.SelectedItem != null)
+        {
+            // ISSUE no data binding
+            CustomerPopup.IsOpen = true;
         }
     }
 
@@ -706,5 +719,14 @@ public partial class MainWindow : Window
     private void Button_Click_ImportToDb(object sender, RoutedEventArgs e)
     {
         ImportCsvToDatabase();
+    }
+
+    // DEBUG
+    private void DebugLog(string message)
+    {
+        if (DebugModeCheckBox.IsChecked == true)
+        {
+            MessageBox.Show(message, "Debug", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 }

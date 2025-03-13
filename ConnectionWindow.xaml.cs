@@ -89,8 +89,8 @@ namespace csh_wpf_ado_pg_northwind_import
 
         private void TestConnectionButton_Click_TestConnection(object sender, RoutedEventArgs e)
         {
-            //
-            MessageBox.Show("Testing connection", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            // DEBUG
+            //MessageBox.Show("Testing connection", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
             // check connection state Npgsql
 
