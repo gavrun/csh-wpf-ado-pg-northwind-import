@@ -152,7 +152,9 @@ namespace csh_wpf_ado_pg_northwind_import
             //    return;
             //}
 
-            MessageBox.Show("Saving connection", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            // DEBUG
+            //MessageBox.Show("Saving connection", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            
 
             try
             {

@@ -147,6 +147,14 @@ public partial class MainWindow : Window
         }
     }
 
+    // DEBUG helper
+    private void DebugLog(string message)
+    {
+        if (DebugModeCheckBox.IsChecked == true)
+        {
+            MessageBox.Show(message, "Debug", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
 
     // TBD DB workflow
 
@@ -610,6 +618,7 @@ public partial class MainWindow : Window
         if (CustomersGrid.SelectedItem != null)
         {
             // ISSUE no data binding
+            CustomerPopup.DataContext = CustomersGrid.SelectedItem;
             CustomerPopup.IsOpen = true;
         }
     }
@@ -658,7 +667,8 @@ public partial class MainWindow : Window
                         LoadConnectionSettings();
 
                         // DEBUG
-                        MessageBox.Show("Connection deleted", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                        //MessageBox.Show("Connection deleted", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                        DebugLog("Connection deleted");
                     }
 
                 }
@@ -721,12 +731,4 @@ public partial class MainWindow : Window
         ImportCsvToDatabase();
     }
 
-    // DEBUG
-    private void DebugLog(string message)
-    {
-        if (DebugModeCheckBox.IsChecked == true)
-        {
-            MessageBox.Show(message, "Debug", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-    }
 }

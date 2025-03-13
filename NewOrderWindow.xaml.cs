@@ -62,23 +62,15 @@ namespace csh_wpf_ado_pg_northwind_import
 
         private void SaveButton_Click_SaveOrder(object sender, RoutedEventArgs e)
         {
-            string customerId = CustomerComboBox.SelectedValue.ToString();
+            string customerId = CustomerComboBox.SelectedValue?.ToString() ?? "-1";
 
-            int productId = Convert.ToInt16(ProductComboBox.SelectedValue);
+            int productId = ProductComboBox.SelectedValue != null ? Convert.ToInt16(ProductComboBox.SelectedValue) : -1;
 
             int productQuantity;
             bool isValidQuantity = int.TryParse(QuantityTextBox.Text, out productQuantity);
 
-            DateTime orderDate = OrderDatePicker.SelectedDate ?? DateTime.Today;
-
             // default date today
-            //DateTime orderDate = OrderDatePicker.SelectedDate ?? DateTime.Today;
-
-            //if (string.IsNullOrWhiteSpace(customer) || string.IsNullOrWhiteSpace(product) || !isValidQuantity || productQuantity < 0)
-            //{
-            //    MessageBox.Show($"Input order details", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //    return;
-            //}
+            DateTime orderDate = OrderDatePicker.SelectedDate ?? DateTime.Today;
 
             if (CustomerComboBox.SelectedItem == null || ProductComboBox.SelectedItem == null || !isValidQuantity || productQuantity <= 0)
             {
@@ -87,7 +79,6 @@ namespace csh_wpf_ado_pg_northwind_import
             }
 
             // DEBUG
-            //MessageBox.Show($"Order saved\nClient: {customer}\nProduct: {product}\nQuantity: {productQuantity}\nDate: {orderDate.ToShortDateString()}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             //MessageBox.Show($"Order saved", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
             // upload data to database

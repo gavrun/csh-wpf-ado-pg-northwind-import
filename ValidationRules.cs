@@ -22,9 +22,7 @@ namespace csh_wpf_ado_pg_northwind_import
             }
 
             // IP address 
-
             // \b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b
-            // ^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$
 
             // regex verbatim (0.0.0.0 - 255.255.255.255)
             string regexPip = @"^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$";
@@ -62,6 +60,19 @@ namespace csh_wpf_ado_pg_northwind_import
                     return new ValidationResult(false, "Valid range 1024–65535");
             }
             return new ValidationResult(false, "Input correct integer");
+        }
+    }
+
+    public class QuantityValidationRule : ValidationRule
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            string input = value as string;
+            if (!Regex.IsMatch(input, "^[0-9]+$"))
+            {
+                return new ValidationResult(false, "Only numbers allowed");
+            }
+            return ValidationResult.ValidResult;
         }
     }
 }

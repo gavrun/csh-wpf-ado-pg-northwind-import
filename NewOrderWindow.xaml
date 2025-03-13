@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:csh_wpf_ado_pg_northwind_import"
         mc:Ignorable="d"
         Title="Northwind Traders - New Order" 
-        Height="300" Width="400" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Height="300" Width="360" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -29,16 +29,24 @@
         <Label Grid.Row="1" Grid.Column="0" Content="Product:" VerticalAlignment="Center"/>
         <ComboBox x:Name="ProductComboBox" Grid.Row="1" Grid.Column="1" Width="200" Margin="5"/>
         <Label Grid.Row="2" Grid.Column="0" Content="Quantity:" VerticalAlignment="Center"/>
-        <TextBox x:Name="QuantityTextBox" Grid.Row="2" Grid.Column="1" Width="200" Margin="5"/>
+        <TextBox x:Name="QuantityTextBox" Grid.Row="2" Grid.Column="1" Width="200" Margin="5" >
+            <!--<TextBox.Text>
+                <Binding Path="Quantity" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <local:QuantityValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>-->
+        </TextBox>
         <Label Grid.Row="3" Grid.Column="0" Content="Order Date:" VerticalAlignment="Center"/>
         <!-- default date today SelectedDate="{x:Static sys:DateTime.Today}"-->
-        <DatePicker x:Name="OrderDatePicker" Grid.Row="3" Grid.Column="1" Margin="5"/>
+        <DatePicker x:Name="OrderDatePicker" Grid.Row="3" Grid.Column="1" Width="200" Margin="5"/>
 
         <!-- buttons -->
         <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
             <Button x:Name="SaveButton" Content="Save" Width="80" Margin="5" Click="SaveButton_Click_SaveOrder" />
             <Button x:Name="CancelButton" Content="Cancel" Width="80" Margin="5" Click="CancelButton_Click_Cancel" />
         </StackPanel>
-        
+
     </Grid>
 </Window>
