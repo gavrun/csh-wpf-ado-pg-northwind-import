@@ -50,7 +50,7 @@
             <!-- left panel -->
             <StackPanel x:Name="SidePanel" DockPanel.Dock="Left" Width="200" Visibility="Visible" Background="#EEE">
                 <Label Content="Database Connections" FontWeight="Normal" Padding="5" />
-                <ListBox x:Name="ConnectionsList" Height="300" >
+                <ListBox x:Name="ConnectionsList" Height="350" >
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -61,8 +61,9 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <!-- chose or new -->
-                <Button x:Name="ConnectButton" Content="Connect" Width="75" Height="20" Margin="5" Click="ConnectButton_Click_Connect" />
+                <Button x:Name="ConnectButton" Content="Connect" Width="75" Height="20" Margin="5,10,5,5" Click="ConnectButton_Click_Connect" />
                 <Button x:Name="EditButton" Content="Edit" Width="75" Height="20" Margin="5" Click="EditButton_Click_EditConnection" />
+                <Button x:Name="DeleteButton" Content="Delete" Width="75" Height="20" Margin="5,30,5,5" Click="DeleteButton_Click_DeleteConnection"  />
             </StackPanel>
 
             <TabControl x:Name="MainTabControl" DockPanel.Dock="Right" >

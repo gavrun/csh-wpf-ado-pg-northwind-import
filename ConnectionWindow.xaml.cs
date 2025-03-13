@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -95,6 +96,33 @@ namespace csh_wpf_ado_pg_northwind_import
             MessageBox.Show("Testing connection", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
             // check connection state Npgsql
+
+            string connString = $"Host={HostTextBox.Text.Trim()};" +
+                                $"Port={PortTextBox.Text.Trim()};" +
+                                $"Database={DatabaseTextBox.Text.Trim()};" +
+                                $"Username={UserTextBox.Text.Trim()};" +
+                                $"Password={PasswordBox.Password.Trim()};" +
+                                $"Pooling=true;";
+
+            try
+            {
+                using (var conn = new NpgsqlConnection(connString))
+                {
+                    conn.Open();
+                    string debugString = conn.FullState.ToString();
+                    MessageBox.Show($"Connection state: {debugString}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error testing connection: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //throw;
+            }
+            finally 
+            {
+                //conn.Close();
+            }
+
         }
 
         private void SaveButton_Click_SaveConnection(object sender, RoutedEventArgs e)
@@ -140,7 +168,7 @@ namespace csh_wpf_ado_pg_northwind_import
                 {
                     foreach (XElement conn in root.Elements("Connection"))
                     {
-                        conn.Element("DefaultConnectionCheckBox").Value = "false";
+                        conn.Element("IsDefault").Value = "false";
                     }
                 }
 
@@ -154,7 +182,7 @@ namespace csh_wpf_ado_pg_northwind_import
                     {
                         existingConnection.Element("ConnectionName").Value = connName;
                         existingConnection.Element("Provider").Value = provider;
-                        existingConnection.Element("DefaultConnectionCheckBox").Value = isDefault.ToString();
+                        existingConnection.Element("IsDefault").Value = isDefault.ToString();
                         existingConnection.Element("Host").Value = host;
                         existingConnection.Element("Port").Value = port;
                         existingConnection.Element("Database").Value = database;
@@ -168,7 +196,7 @@ namespace csh_wpf_ado_pg_northwind_import
                     XElement newConnection = new XElement("Connection",
                             new XElement("ConnectionName", connName),
                             new XElement("Provider", provider),
-                            new XElement("DefaultConnectionCheckBox", isDefault),
+                            new XElement("IsDefault", isDefault),
                             new XElement("Host", host),
                             new XElement("Port", port),
                             new XElement("Database", database),

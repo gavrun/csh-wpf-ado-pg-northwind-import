@@ -31,24 +31,24 @@
         <Label Grid.Row="1" Grid.Column="0" Content="Host:" VerticalAlignment="Center"/>
         <TextBox x:Name="HostTextBox" Grid.Row="1" Grid.Column="1" Width="200" Margin="5" >
             <!--HostIpValidationRule-->
-            <TextBox.Text>
+            <!--<TextBox.Text>
                 <Binding Path="Text" RelativeSource="{RelativeSource Self}" UpdateSourceTrigger="PropertyChanged" >
                     <Binding.ValidationRules>
                         <local:HostIpValidationRule/>
                     </Binding.ValidationRules>
                 </Binding>
-            </TextBox.Text>
+            </TextBox.Text>-->
         </TextBox>
         <Label Grid.Row="2" Grid.Column="0" Content="Port:" VerticalAlignment="Center"/>
         <TextBox x:Name="PortTextBox" Grid.Row="2" Grid.Column="1" Width="200" Margin="5">
             <!--HostIpValidationRule-->
-            <TextBox.Text>
+            <!--<TextBox.Text>
                 <Binding Path="Text" RelativeSource="{RelativeSource Self}" UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
                         <local:PortValidationRule/>
                     </Binding.ValidationRules>
                 </Binding>
-            </TextBox.Text>
+            </TextBox.Text>-->
         </TextBox>
         <Label Grid.Row="3" Grid.Column="0" Content="Database:" VerticalAlignment="Center"/>
         <TextBox x:Name="DatabaseTextBox" Grid.Row="3" Grid.Column="1" Width="200" Margin="5"/>

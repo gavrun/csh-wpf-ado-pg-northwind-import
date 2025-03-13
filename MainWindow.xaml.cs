@@ -28,6 +28,7 @@ public partial class MainWindow : Window
         //TestDatabaseConnection();
         LoadConnectionSettings();
 
+        ConnectToDefault();
     }
 
     // DEBUG
@@ -75,7 +76,7 @@ public partial class MainWindow : Window
                     {
                         ConnectionName = conn.Element("ConnectionName")?.Value,
                         Provider = conn.Element("Provider")?.Value,
-                        IsDefault = bool.TryParse(conn.Element("DefaultConnectionCheckBox")?.Value, out bool result) && result,
+                        IsDefault = bool.TryParse(conn.Element("IsDefault")?.Value, out bool result) && result,
                         Host = conn.Element("Host")?.Value,
                         Port = conn.Element("Port")?.Value,
                         Database = conn.Element("Database")?.Value,
@@ -83,7 +84,6 @@ public partial class MainWindow : Window
                         Password = conn.Element("Password")?.Value
                     });
                 }
-                //string connString = $"Server={host};Port={port};User Id={user};Password={password};Database={database};";
 
                 // pass connections to UI
                 ConnectionsList.ItemsSource = connections;
@@ -99,6 +99,7 @@ public partial class MainWindow : Window
 
                 defaultConnection = connections.FirstOrDefault(c => c.IsDefault);
 
+                // DEBUG
                 MessageBox.Show("Connections loaded", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
@@ -110,6 +111,18 @@ public partial class MainWindow : Window
         else
         {
             MessageBox.Show("Connections were not saved", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
+
+    private void ConnectToDefault()
+    {
+        if (defaultConnection != null)
+        {
+            // DEBUG
+            string conn = defaultConnection.ConnectionName.ToString();
+            MessageBox.Show($"Connecting to {conn}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // TBD connect to default connection
         }
     }
 
@@ -144,6 +157,7 @@ public partial class MainWindow : Window
         //close database connection 
 
         //save connection settings if not saved
+        //SaveConnectionSettings()
 
         Application.Current.Shutdown();
     }
@@ -191,6 +205,7 @@ public partial class MainWindow : Window
         }
         else
         {
+            // DEBUG
             //MessageBox.Show("Select connection", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
             if (defaultConnection != null)
@@ -315,6 +330,48 @@ public partial class MainWindow : Window
 
             // TBD read CSV file
             //ProcessCsvFile(filePath);
+        }
+    }
+
+    private void DeleteButton_Click_DeleteConnection(object sender, RoutedEventArgs e)
+    {
+        if (ConnectionsList.SelectedItem is ConnectionItem selectedConnection)
+        {
+            MessageBoxResult result = MessageBox.Show($"Delete connection {selectedConnection.ConnectionName}?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    XDocument configXml = XDocument.Load(dbConfigPath);
+                    XElement root = configXml.Element("ConnectionSettings");
+
+                    XElement connectionToDelete = root
+                        .Elements("Connection")
+                        .FirstOrDefault(c => c.Element("ConnectionName")?.Value == selectedConnection.ConnectionName);
+
+                    if (connectionToDelete != null)
+                    {
+                        connectionToDelete.Remove();
+                        configXml.Save(dbConfigPath);
+
+                        LoadConnectionSettings();
+
+                        // DEBUG
+                        MessageBox.Show("Connection deleted", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error deleting connection: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    throw;
+                }
+            }
+        }
+        else
+        {
+            MessageBox.Show("Select connection", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 }
