@@ -39,13 +39,19 @@ public partial class MainWindow : Window
 
         ConnectToDefault();
 
-        LoadCategories();
-        LoadProducts();
+        // ISSUE InvalidOperationException > no similar check for [QueryHelper] 
+        if (App.ActiveConnection != null && App.ActiveConnection.State == ConnectionState.Open)
+        {
+            //ConnectToDefault();
 
-        LoadCustomersFilter();
-        LoadOrders(); 
+            LoadCategories();
+            LoadProducts();
 
-        LoadCustomers();
+            LoadCustomersFilter();
+            LoadOrders();
+
+            LoadCustomers();
+        }
     }
     
     // read dbconfig.xml when starting 
